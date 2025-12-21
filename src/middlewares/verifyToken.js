@@ -3,12 +3,12 @@ import { authClient } from "../../app.js";
 
 // Middleware to verify token
 export const verifyTokenMiddleware = async (req, res, next) => {
-  //   const authHeader = req.headers["authorization"];
-  //   if (!authHeader) return res.status(401).json({ error: "No token provided" });
+  const authHeader = req.headers["authorization"];
+  if (!authHeader) return res.status(401).json({ error: "No token provided" });
 
-  //   const token = authHeader.replace("Bearer ", "");
-  console.log('Verifying token...');
-  const token = "hhhhhhhh";
+  const token = authHeader.replace("Bearer ", "");
+  // console.log('Verifying token...');
+  // const token = "";
   try {
     const verify = authClient.send({ cmd: "verify_token" }, { token });
     const result = await lastValueFrom(verify);

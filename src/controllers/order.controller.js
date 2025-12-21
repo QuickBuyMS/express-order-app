@@ -36,11 +36,11 @@ export const getUserAllAddress = async (req, res, next) => {
   }
 };
 
-export const getUserParticularAddress = async (req, res, next) => {
+export const addUserAddress = async (req, res, next) => {
   try {
-    const address = await OrderService.getUserParticularAddress(
-      req.params.address_id,
-      req.params.user_id
+    const address = await OrderService.addUserAddress(
+      req.params.user_id,
+      req.body
     );
     res.status(200).json({ success: true, data: address });
   } catch (err) {

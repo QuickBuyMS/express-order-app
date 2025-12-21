@@ -4,28 +4,28 @@ import {
   getUserAllOrders,
   getParticularOrder,
   getUserAllAddress,
-  getUserParticularAddress,
   updateParticularAddress,
   getCartItems,
   updateCartItems,
   getWishlistItems,
   updateWishlistItems,
+  addUserAddress,
 } from "../controllers/order.controller.js";
 import { verifyTokenMiddleware } from "../middlewares/verifyToken.js";
 
 const router = express.Router();
 
 // Orders
-router.post("/order", verifyTokenMiddleware, insertOrder);
+router.post("/place-order", verifyTokenMiddleware, insertOrder);
 router.get("/orders/:user_id", verifyTokenMiddleware, getUserAllOrders);
 router.get("/order/:order_id", verifyTokenMiddleware, getParticularOrder);
 
 // Addresses
 router.get("/addresses/:user_id", verifyTokenMiddleware, getUserAllAddress);
-router.get(
-  "/address/:user_id/:address_id",
+router.post(
+  "/address/:user_id",
   verifyTokenMiddleware,
-  getUserParticularAddress
+  addUserAddress
 );
 router.put(
   "/address/:address_id",

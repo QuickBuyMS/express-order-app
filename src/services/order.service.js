@@ -1,4 +1,4 @@
-import db from '../config/db.config.js';
+import db from "../config/db.config.js";
 
 export const OrderService = {
   insertOrder: async (orderData) => {
@@ -104,12 +104,32 @@ export const OrderService = {
     return rows;
   },
 
-  getUserParticularAddress: async (address_id) => {
+  addUserAddress: async (user_id, addressData) => {
+    const {
+      address_line1,
+      address_line2,
+      city,
+      state,
+      pincode,
+      country,
+      address_type,
+      is_default,
+    } = addressData;
     const [rows] = await db.query(
-      "SELECT * FROM addresses WHERE address_id = ?;",
-      [address_id]
+      "INSERT INTO addresses (address_line1,address_line2, city, state, pincode, country , is_default, address_type) VALUES (?,?,?,?,?,?,?,?);",
+      [
+        address_line1,
+        address_line2,
+        city,
+        state,
+        pincode,
+        country,
+        is_default,
+        address_type,
+        address_id,
+      ]
     );
-    return rows[0];
+    return rows;
   },
 
   getCartItems: async (user_id) => {

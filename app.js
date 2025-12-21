@@ -25,11 +25,11 @@ export const authClient = ClientProxyFactory.create({
 });
 
 // Routes
-app.use("/api", order);
+app.use("/api/order", order);
 
 // Health Check
 app.get("/", (req, res) => {
-  res.send("API is running...");
+  res.send("Order App is running...");
 });
 
 // Example route that throws an error
@@ -44,7 +44,7 @@ app.get("/error", (req, res, next) => {
 app.use(errorLogger);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 7000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
