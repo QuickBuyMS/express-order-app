@@ -12,9 +12,9 @@ export const errorLogger = async (err, req, res, next) => {
   const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
   try {
     await db.query(
-      `INSERT INTO error_logs (message,api)
-         VALUES (?,?)`,
-      [err.message, fullUrl]
+      `INSERT INTO error_logs (message,api,status_code)
+         VALUES (?,?,?)`,
+      [err.message, fullUrl, res.statusCode]
     );
   } catch (dbErr) {
     console.error("Failed to insert status log:", dbErr.message);

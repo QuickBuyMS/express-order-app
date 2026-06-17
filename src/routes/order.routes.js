@@ -18,14 +18,14 @@ const router = express.Router();
 
 // Orders
 router.post("/place-order", verifyTokenMiddleware, insertOrder);
-router.get("/all-order/:user_id", verifyTokenMiddleware, getUserAllOrders);
+router.get("/all-order", verifyTokenMiddleware, getUserAllOrders);
 router.get("/order-details/:order_id", verifyTokenMiddleware, getParticularOrder);
 router.post("/cancel-order", verifyTokenMiddleware, cancelOrder);
 
 // Addresses
-router.get("/addresses/:user_id", verifyTokenMiddleware, getUserAllAddress);
+router.get("/addresses", verifyTokenMiddleware, getUserAllAddress);
 router.post(
-  "/add-address/:user_id",
+  "/add-address",
   verifyTokenMiddleware,
   addUserAddress
 );
@@ -36,11 +36,11 @@ router.put(
 );
 
 // Cart
-router.get("/cartdetails/:user_id", verifyTokenMiddleware, getCartItems);
-router.patch("/updatecart/:user_id", verifyTokenMiddleware, updateCartItems);
+router.get("/cartdetails", verifyTokenMiddleware, getCartItems);
+router.patch("/updatecart", verifyTokenMiddleware, updateCartItems);
 
 // Wishlist
-router.get("/wishlistdetails/:user_id", verifyTokenMiddleware, getWishlistItems);
-router.patch("/updatewishlist/:user_id", verifyTokenMiddleware, updateWishlistItems);
+router.get("/wishlistdetails", verifyTokenMiddleware, getWishlistItems);
+router.patch("/updatewishlist", verifyTokenMiddleware, updateWishlistItems);
 
 export default router;

@@ -9,9 +9,8 @@ const db = mysql.createPool({
   host: "localhost",
   user: "root",
   database: "QuickBuy",
-  port: "3306",
+  port: 3306,
   password: "",
-  socketPath: '/opt/lampp/var/mysql/mysql.sock' // important for XAMPP
 });
 
 db.getConnection((err) => {

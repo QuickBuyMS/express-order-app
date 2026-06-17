@@ -16,7 +16,7 @@ export const insertOrder = async (req, res, next) => {
 
 export const getUserAllOrders = async (req, res, next) => {
   try {
-    const orders = await OrderService.getUserAllOrders(req.params.user_id);
+    const orders = await OrderService.getUserAllOrders(req.user.userId);
     res.status(200).json({
       status: true,
       statusCode: 200,
@@ -61,7 +61,7 @@ export const cancelOrder = async (req, res, next) => {
 
 export const getUserAllAddress = async (req, res, next) => {
   try {
-    const addresses = await OrderService.getUserAllAddress(req.params.user_id);
+    const addresses = await OrderService.getUserAllAddress(req.user.userId);
     res.status(200).json({
       status: true,
       statusCode: 200,
@@ -76,7 +76,7 @@ export const getUserAllAddress = async (req, res, next) => {
 export const addUserAddress = async (req, res, next) => {
   try {
     const address = await OrderService.addUserAddress(
-      req.params.user_id,
+      req.user.userId,
       req.body,
     );
     res.status(200).json({
@@ -109,7 +109,11 @@ export const updateParticularAddress = async (req, res, next) => {
 
 export const getCartItems = async (req, res, next) => {
   try {
-    const cartItems = await OrderService.getCartItems(req.params.user_id);
+
+    // console.log('user------------>', req.user)
+
+    const cartItems = await OrderService.getCartItems(req.user.userId);
+    console.log(cartItems)
     res.status(200).json({
       status: true,
       statusCode: 200,
@@ -123,11 +127,11 @@ export const getCartItems = async (req, res, next) => {
 
 export const updateCartItems = async (req, res, next) => {
   try {
-    // console.log(req.params.user_id,req.body.product_id,req.body.quantity)
+    console.log(req.params.user_id, req.body.product_id, req.body.quantity)
 
     const updatedCart = await OrderService.updateCartItems(
-      req.params.user_id,
-      req.body.productId,
+      req.user.userId,
+      req.body.product_id,
       req.body.quantity,
     );
     res.status(200).json({
@@ -143,7 +147,7 @@ export const updateCartItems = async (req, res, next) => {
 
 export const getWishlistItems = async (req, res, next) => {
   try {
-    const wishlist = await OrderService.getWishlistItems(req.params.user_id);
+    const wishlist = await OrderService.getWishlistItems(req.user.userId);
     res.status(200).json({
       status: true,
       statusCode: 200,
@@ -158,8 +162,8 @@ export const getWishlistItems = async (req, res, next) => {
 export const updateWishlistItems = async (req, res, next) => {
   try {
     const updatedWishlist = await OrderService.updateWishlistItems(
-      req.params.user_id,
-      req.body.productId,
+      req.user.userId,
+      req.body.product_id,
     );
     res.status(200).json({
       status: true,

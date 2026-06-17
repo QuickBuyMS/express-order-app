@@ -18,7 +18,7 @@ export const verifyTokenMiddleware = async (req, res, next) => {
         .status(401)
         .json({ error: "Unauthorized", details: result.error });
     }
-
+    console.log('result.decoded', result.decoded)
     req.user = result.decoded;
     next();
   } catch (err) {

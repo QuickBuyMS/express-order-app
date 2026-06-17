@@ -221,7 +221,7 @@ export const OrderService = {
   },
   getParticularOrder: async (order_id) => {
     const [orderDetails] = await db.query(
-      "SELECT p.product_id, p.image_url, p.name, u.user_id, oi.quantity, oi.price, o.order_id, o.status, o.total_amount, o.created_at FROM orders o LEFT JOIN order_items oi ON oi.order_id = o.order_id LEFT JOIN users u ON u.user_id = o.user_id LEFT JOIN products p ON p.product_id = oi.product_id where o.order_id = ?;",
+      "SELECT p.product_id, p.image_url, p.name, u.user_id, oi.order_item_id, oi.quantity, oi.price, oi.status, o.order_id, o.total_amount, o.created_at FROM orders o LEFT JOIN order_items oi ON oi.order_id = o.order_id LEFT JOIN users u ON u.user_id = o.user_id LEFT JOIN products p ON p.product_id = oi.product_id where o.order_id = ?;",
       [order_id],
     );
 
@@ -379,7 +379,13 @@ GROUP By p.name`,
         [user_id],
       );
       const cartId = cart.cart_id;
-      if (quantityChange === -1) {
+      if (quantityChange === 0) {
+        // Completely remove item from cart
+        await connection.query(
+          "DELETE FROM cart_items WHERE cart_id = ? AND product_id = ?",
+          [cartId, product_id]
+        );
+      } else if (quantityChange === -1) {
         // 1. Delete immediately if quantity is 1 (or somehow less)
         // This ensures the row is gone BEFORE it can ever hit 0.
         const [deleteResult] = await connection.query(

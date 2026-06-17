@@ -6,6 +6,7 @@ import compression from "compression";
 import order from "./src/routes/order.routes.js";
 import { errorHandler } from "./src/middlewares/error.middleware.js";
 import { errorLogger } from "./src/middlewares/error.logger.js";
+import { globalLimiter } from "./src/middlewares/rateLimiter.js";
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 
 
@@ -17,6 +18,8 @@ app.use(express.json());
 app.use(helmet());
 app.use(compression());
 app.use(morgan("dev"));
+app.use(globalLimiter);
+
 
 // Connect to Auth microservice via TCP
 export const authClient = ClientProxyFactory.create({
