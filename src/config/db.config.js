@@ -6,11 +6,11 @@ dotenv.config();
 // require("dotenv").config();
 
 const db = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  database: "QuickBuy",
-  port: 3306,
-  password: "",
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  database: process.env.DB_NAME || "QuickBuy",
+  port: Number(process.env.DB_PORT) || 3306,
+  password: process.env.DB_PASSWORD || "",
 });
 
 db.getConnection((err) => {

@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
@@ -7,7 +8,8 @@ import order from "./src/routes/order.routes.js";
 import { errorHandler } from "./src/middlewares/error.middleware.js";
 import { errorLogger } from "./src/middlewares/error.logger.js";
 import { globalLimiter } from "./src/middlewares/rateLimiter.js";
-import { ClientProxyFactory, Transport } from '@nestjs/microservices';
+import { createAuthClient } from './src/config/messaging.config.js';
+
 
 
 const app = express();
@@ -21,11 +23,8 @@ app.use(morgan("dev"));
 app.use(globalLimiter);
 
 
-// Connect to Auth microservice via TCP
-export const authClient = ClientProxyFactory.create({
-  transport: Transport.TCP,
-  options: { port: 5001 },
-});
+// Connect to Auth microservice via feature-flagged transport (TCP or RMQ)
+export const authClient = createAuthClient();
 
 // Routes
 app.use("/api/order", order);
