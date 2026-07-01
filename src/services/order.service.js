@@ -19,18 +19,25 @@ export const OrderService = {
         throw new Error("Insufficient points to place the order");
       }
 
-      // 2. Fetch current Cart Items to move to the Order (Matches image_261b6a.png)
+      // 2. Fetch current Cart Items to move to the Order and lock product rows
       const [cartItems] = await connection.query(
-        `SELECT ci.product_id, ci.quantity, p.price 
+        `SELECT ci.product_id, ci.quantity, p.price, p.stock 
        FROM cart_items ci
        JOIN cart c ON ci.cart_id = c.cart_id
        JOIN products p ON ci.product_id = p.product_id
-       WHERE c.user_id = ?`,
+       WHERE c.user_id = ? FOR UPDATE`,
         [user_id],
       );
 
       if (cartItems.length === 0) {
         throw new Error("Cart is empty");
+      }
+
+      // Check stock
+      for (const item of cartItems) {
+        if (item.stock < item.quantity) {
+          throw new Error(`Insufficient stock for product ID: ${item.product_id}`);
+        }
       }
 
       // 3. Create the Main Order
@@ -74,6 +81,14 @@ export const OrderService = {
         "UPDATE users SET points = points - ? WHERE user_id = ?;",
         [total_amount, user_id],
       );
+
+      // 5.5 Deduct Stock
+      for (const item of cartItems) {
+        await connection.query(
+          "UPDATE products SET stock = stock - ? WHERE product_id = ?;",
+          [item.quantity, item.product_id]
+        );
+      }
 
       // 6. Clear the User's Cart (Matches image_261b8d.png)
       await connection.query(
