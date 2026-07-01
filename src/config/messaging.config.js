@@ -36,7 +36,7 @@ export function createAuthClient() {
   }
 
   // Default: TCP
-  const host = process.env.AUTH_TCP_HOST || 'localhost';
+  const host = process.env.AUTH_TCP_HOST || '127.0.0.1';
   console.log(`[Messaging] Transport: TCP → ${host}:5001`);
   return ClientProxyFactory.create({
     transport: Transport.TCP,

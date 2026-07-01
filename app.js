@@ -9,6 +9,7 @@ import { errorHandler } from "./src/middlewares/error.middleware.js";
 import { errorLogger } from "./src/middlewares/error.logger.js";
 import { globalLimiter } from "./src/middlewares/rateLimiter.js";
 import { createAuthClient } from './src/config/messaging.config.js';
+import { createGraphQLMiddleware } from './src/graphql/index.js';
 
 
 
@@ -46,9 +47,30 @@ app.get("/error", (req, res, next) => {
 app.use(errorLogger);
 app.use(errorHandler);
 
+// ---- Async bootstrap: Apollo must start before Express listens ----
 const PORT = process.env.PORT || 7000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+
+(async () => {
+  try {
+    const graphqlMiddleware = await createGraphQLMiddleware(authClient);
+
+    // Mount GraphQL endpoint — uses its own CORS and body parsing
+    app.use(
+      "/graphql",
+      cors(),
+      express.json(),
+      graphqlMiddleware,
+    );
+
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log(`GraphQL endpoint: http://localhost:${PORT}/graphql`);
+      console.log(`Microservice transport: ${process.env.TRANSPORT_TYPE}`);
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err);
+    process.exit(1);
+  }
+})();
 
 export default app;
